@@ -10,14 +10,16 @@
  * Perl 5.24+
  * SMTP Server (Does not do user/pass or TLS/SSL at this time)
 
-To install extract the release with tar xvzf EasyPing_0.1.tar.gz
+To install extract the release with tar xvzf EasyPing_0.1.tar.gz or git clone
+
+`git clone https://github.com/scotticles/EasyPing.git`
 
 * `cd EasyPing dir`
 * `sudo apt-get install libdev-ssl` <--not sure if needed but Net::SMTP requires it...
 * `sudo apt-get install carton`
 * `carton install --deployment`
 
-![alt text](https://github.com/scotticles/EasyPing/raw/master/screenshot-1.png "Carton Install")
+![alt text](https://github.com/scotticles/EasyPing/raw/master/screenshots/screenshot-1.png "Carton Install")
 
 * `cp db/settings-example.csv db/settings.csv`
 * `cp db/hosts-example.csv db/hosts.csv`
@@ -29,7 +31,7 @@ Once the settings and hosts have been created you can run the script with the fo
 
 * `carton exec run.pl`
 
-![alt text](https://github.com/scotticles/EasyPing/raw/master/screenshot.png "Run Screenshot")
+![alt text](https://github.com/scotticles/EasyPing/raw/master/screenshots/screenshot.png "Run Screenshot")
 
 This should output SUCCESS or FAIL and end with an execution time, you want to keep
 the execution time under the time it takes for the cron to run. If you check every 5 minutes, 
