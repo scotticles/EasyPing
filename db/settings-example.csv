@@ -1,0 +1,2 @@
+smtp_server,from_address
+192.168.1.1,"fromme@domain.com"

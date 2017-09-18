@@ -1,0 +1,2 @@
+id,name,ip,status,type_check,email
+1,deviceA,192.168.1.2,up,ping,"email@domain.com"

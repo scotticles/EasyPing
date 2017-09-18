@@ -1,0 +1,32 @@
+# EasyPing
+####Version 0.1
+
+##How to Install
+####Requirements: 
+ * Linux
+ * Perl 5.24+
+ * SMTP Server (Does not do user/pass or TLS/SSL at this time)
+#####
+To install extract the release with tar xvzf EasyPing_0.1.tar.gz
+
+* `cd EasyPing dir`
+* `sudo apt-get install libdev-ssl`
+* `sudo apt-get install cpanminus`
+* `sudo cpanm Carton`
+* `carton install --deployment`
+
+* edit the db/settings.csv to set the SMTP IP address and the from email address.
+* edit the db/hosts.csv and add in the hosts and for email you can do one email address or multiple
+by "email1@domain.com,email2@domain.com" Do not put spaces, but wrap in quotes.
+
+Once the settings and hosts have been created you can run the script with the following command:
+
+* `carton exec run.pl`
+
+This should output SUCCESS or FAIL and end with an execution time, you want to keep
+the execution time under the time it takes for the cron to run. If you check every 5 minutes, 
+the script shouldn't take 5 minutes to run.
+ 
+##How to Cron
+* `vim /etc/cron.d/EasyPing`
+* `*/5 * * * * usertorunas /path/to/carton exec /path/to/run.pl`
