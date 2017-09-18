@@ -39,19 +39,31 @@ my $FROM_ADDRESS = $settings->{'from_address'};
 foreach my $key ( keys %{ $hosts } ) {
     if (${$hosts}{$key}->{'type_check'} eq 'ping') {
         #print "key: $key, value: ${$hosts}{$key}->{'ip'}\n";
-        my $result = $ping->pingHost(${$hosts}{$key}->{'ip'});
+        my @users = split(",", ${$hosts}{$key}->{'email'});
+        my $pingIP = ${$hosts}{$key}->{'ip'};
+        $pingIP =~ s/^\s+|\s+$//g;
+        my $result = $ping->pingHost($pingIP);
         if ($result) {
             print "SUCCESS ${$hosts}{$key}->{'name'} \@ ${$hosts}{$key}->{'ip'}\n";
-            $db->updateHost(${$hosts}{$key}->{'id'}, 'up');
+            if(${$hosts}{$key}->{'status'} eq 'down')
+            {
+                $db->updateHost(${$hosts}{$key}->{'id'}, 'up');
+                foreach (@users) {
+                        $email->sendMessage($SMTP_SERVER, $FROM_ADDRESS, $_, ${$hosts}{$key}->{'name'}, ${$hosts}{$key}->{'ip'}, 'up');
+                }
+            }
+            else
+            {
+                $db->updateHost(${$hosts}{$key}->{'id'}, 'up');
+            }
         }
         else {
             print "FAIL ${$hosts}{$key}->{'name'} \@ ${$hosts}{$key}->{'ip'}\n";
-            my @users = split(",", ${$hosts}{$key}->{'email'});
             foreach (@users) {
                 if(${$hosts}{$key}->{'status'} eq 'up')
                 {
                     $db->updateHost(${$hosts}{$key}->{'id'}, 'down');
-                    $email->sendMessage($SMTP_SERVER, $FROM_ADDRESS, $_, ${$hosts}{$key}->{'name'}, ${$hosts}{$key}->{'ip'});
+                    $email->sendMessage($SMTP_SERVER, $FROM_ADDRESS, $_, ${$hosts}{$key}->{'name'}, ${$hosts}{$key}->{'ip'}, 'down');
                 }
             }
         }
