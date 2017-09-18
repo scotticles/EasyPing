@@ -27,9 +27,9 @@ To install extract the release with tar xvzf EasyPing_0.1.tar.gz or git clone
 by "email1@domain.com,email2@domain.com" Do not put spaces, but wrap in quotes.
 
 Once the settings and hosts have been created you can run the script with the following command:
-
-* `sudo chmod +x run.pl` make it executable
-* `carton exec /path/to/run.pl` this needs to be the full path
+* edit cron.sh to match the paths
+* `sudo chmod +x cron.sh` make it executable
+* `carton exec /path/to/easyping.pl` this needs to be the full path
 
 
 ![alt text](https://github.com/scotticles/EasyPing/raw/master/screenshots/screenshot.png "Run Screenshot")
@@ -40,4 +40,4 @@ the script shouldn't take 5 minutes to run.
  
 ##How to Cron
 * `vim /etc/cron.d/easyping`
-* `*/5 * * * * usertorunas carton exec /path/to/run.pl > /dev/null 2>&1`
+* `*/5 * * * * scott /opt/EasyPing/easyping.sh > /tmp/easyping.log`
