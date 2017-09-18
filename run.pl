@@ -44,7 +44,7 @@ foreach my $key ( keys %{ $hosts } ) {
         $pingIP =~ s/^\s+|\s+$//g;
         my $result = $ping->pingHost($pingIP);
         if ($result) {
-            print "SUCCESS ${$hosts}{$key}->{'name'} \@ ${$hosts}{$key}->{'ip'}\n";
+            printf ("SUCCESS ${$hosts}{$key}->{'name'} \@ ${$hosts}{$key}->{'ip'} (packet return time: %.2f ms)\n", $result);
             if(${$hosts}{$key}->{'status'} eq 'down')
             {
                 $db->updateHost(${$hosts}{$key}->{'id'}, 'up');
