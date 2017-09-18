@@ -28,7 +28,9 @@ by "email1@domain.com,email2@domain.com" Do not put spaces, but wrap in quotes.
 
 Once the settings and hosts have been created you can run the script with the following command:
 
-* `carton exec run.pl`
+* `sudo chmod +x run.pl` make it executable
+* `carton exec /path/to/run.pl` this needs to be the full path
+
 
 ![alt text](https://github.com/scotticles/EasyPing/raw/master/screenshots/screenshot.png "Run Screenshot")
 
@@ -37,5 +39,5 @@ the execution time under the time it takes for the cron to run. If you check eve
 the script shouldn't take 5 minutes to run.
  
 ##How to Cron
-* `vim /etc/cron.d/EasyPing`
-* `*/5 * * * * usertorunas /path/to/carton exec /path/to/perl /path/to/run.pl > /dev/null 2>&1`
+* `vim /etc/cron.d/easyping`
+* `*/5 * * * * usertorunas carton exec /path/to/run.pl > /dev/null 2>&1`
