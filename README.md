@@ -1,17 +1,16 @@
 # EasyPing
 
-####Version 0.1
+#### Version 0.1
 
-##How to Install
+## How to Install
 
-####Requirements: 
+#### Requirements: 
 
  * Linux
  * Perl 5.24+
  * SMTP Server (Does not do user/pass or TLS/SSL at this time)
 
 To install extract the release with tar xvzf EasyPing_0.1.tar.gz or git clone
-
 `git clone https://github.com/scotticles/EasyPing.git`
 
 * `cd EasyPing dir`
