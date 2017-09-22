@@ -76,7 +76,7 @@ the script shouldn't take 5 minutes to run.
  
 ##How to Cron
 * `vim /etc/cron.d/easyping`
-* `*/5 * * * * scott /opt/EasyPing/easyping.sh > /tmp/easyping.log`
+* `*/5 * * * * scott /opt/EasyPing/cron.sh > /tmp/easyping.log`
 
 This will output data that is seen from running it manual to the /tmp/easyping.log file. This could 
 be helpful for troubleshooting later on or to check the return times of success pings.
