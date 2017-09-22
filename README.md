@@ -2,12 +2,28 @@
 
 #### Version 0.1
 
+## Description
+
+EasyPing was written to ping devices such as network switches or critical points on a network and notify me if they went up or down. I already use monitoring tools but
+those collect more then just a ping and for devices I do not own; I just needed a ping solution. There are plenty 
+of tools out there that already do this but I wanted a simple script to do it and did not want to install something that required config editing that took documentation reading to do so, 
+a database backend or provided a GUI.
+
+I picked CSV as the database so that its easy to edit in a text editor such as VIM. 
+
+I hope this is easy for those that attempt to get going on it. If there is a request to add SMTP to Google, make the issue and it 
+can probably be easily added.
+
+My current setup send me emails on some devices and to more critical, I used my Pushover email alias to receive a more alerting notification.
+
+**I will eventually get around to adding a license on to this.**
+
 ## How to Install
 
 #### Requirements: 
 
  * Linux
- * Perl 5.24+
+ * Perl 5.10+
  * SMTP Server (Does not do user/pass or TLS/SSL at this time)
 
 To install extract the release with tar xvzf EasyPing_0.1.tar.gz or git clone
@@ -23,8 +39,28 @@ To install extract the release with tar xvzf EasyPing_0.1.tar.gz or git clone
 * `cp db/settings-example.csv db/settings.csv`
 * `cp db/hosts-example.csv db/hosts.csv`
 * edit the db/settings.csv to set the SMTP IP address and the from email address.
+
+| Field          | Description   |
+| ---------------|---------------|
+| smtp_server    | 192.168.1.10                                        |
+| from_address   | The email used for the from address                 |
+| retry_attempts | How many attempts before moving on to the next host |
+| retry_wait     | How many seconds to sleep before each retry attempt |
+
 * edit the db/hosts.csv and add in the hosts and for email you can do one email address or multiple
-by "email1@domain.com,email2@domain.com" Do not put spaces, but wrap in quotes.
+by "foo@bar.com,foo2@bar.com" Do not put spaces, but wrap in quotes.
+
+id,name,ip,status,type_check,email
+
+| Field          | Description   |
+| ---------------|---------------|
+| id         | A unique id for each host                                                         |
+| name       | Name of the host                                                                  |
+| ip         | IP Address of the host                                                            |
+| status     | up,down, set it to up                                                             |
+| type_check | ping, potential for other type of checks in future versions                       |
+| email      | the email to send the notifications to "foo@bar.com" or "foo@bar.com,foo2@bar.com"|
+
 
 Once the settings and hosts have been created you can run the script with the following command:
 * edit cron.sh to match the paths

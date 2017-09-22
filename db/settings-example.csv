@@ -1,2 +1,2 @@
-smtp_server,from_address
-192.168.1.1,"fromme@domain.com"
+smtp_server,from_address,retry_attempts,retry_wait
+192.168.1.1,"fromme@domain.com",5,10

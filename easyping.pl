@@ -34,15 +34,19 @@ my $settings = $db->getSettings();
 #Constants
 my $SMTP_SERVER = $settings->{'smtp_server'};
 my $FROM_ADDRESS = $settings->{'from_address'};
+my $RETRY_ATTEMPTS = $settings->{'retry_attempts'};
+my $RETRY_WAIT = $settings->{'retry_wait'};
+my $attempts = $RETRY_ATTEMPTS;
 
 #Loop through each host
-foreach my $key ( keys %{ $hosts } ) {
+CHECK_LOOP: foreach my $key ( keys %{ $hosts } ) {
     if (${$hosts}{$key}->{'type_check'} eq 'ping') {
         #print "key: $key, value: ${$hosts}{$key}->{'ip'}\n";
         my @users = split(",", ${$hosts}{$key}->{'email'});
         my $pingIP = ${$hosts}{$key}->{'ip'};
         $pingIP =~ s/^\s+|\s+$//g;
         my $result = $ping->pingHost($pingIP);
+        #If Success
         if ($result) {
             printf ("SUCCESS ${$hosts}{$key}->{'name'} \@ ${$hosts}{$key}->{'ip'} (packet return time: %.2f ms)\n", $result);
             if(${$hosts}{$key}->{'status'} eq 'down')
@@ -59,6 +63,13 @@ foreach my $key ( keys %{ $hosts } ) {
         }
         else {
             print "FAIL ${$hosts}{$key}->{'name'} \@ ${$hosts}{$key}->{'ip'}\n";
+            if($attempts > 0)
+            {
+                sleep $RETRY_WAIT;
+                $attempts--;
+                redo CHECK_LOOP;
+            }
+            $attempts = $RETRY_ATTEMPTS;
             foreach (@users) {
                 if(${$hosts}{$key}->{'status'} eq 'up')
                 {
