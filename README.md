@@ -11,9 +11,6 @@ a database backend or provided a GUI.
 
 I picked CSV as the database so that its easy to edit in a text editor such as VIM. 
 
-I hope this is easy for those that attempt to get going on it. If there is a request to add SMTP to Google, make the issue and it 
-can probably be easily added.
-
 My current setup send me emails on some devices and to more critical, I used my Pushover email alias to receive a more alerting notification.
 
 **I will eventually get around to adding a license on to this.**
@@ -30,9 +27,9 @@ To install extract the release with tar xvzf EasyPing_0.1.tar.gz or git clone
 `git clone https://github.com/scotticles/EasyPing.git`
 
 * `cd EasyPing dir`
-* `sudo apt-get install libdev-ssl` <--not sure if needed but Net::SMTP requires it...
+* `sudo apt-get install libdev-ssl` or `libssl-dev` depending on distribution
 * `sudo apt-get install carton`
-* `carton install --deployment`
+* `carton install --deployment` <-- run this after updating from git
 
 ![alt text](https://github.com/scotticles/EasyPing/raw/master/screenshots/screenshot-1.png "Carton Install")
 
@@ -40,12 +37,16 @@ To install extract the release with tar xvzf EasyPing_0.1.tar.gz or git clone
 * `cp db/hosts-example.csv db/hosts.csv`
 * edit the db/settings.csv to set the SMTP IP address and the from email address.
 
-| Field          | Description   |
-| ---------------|---------------|
-| smtp_server    | 192.168.1.10                                        |
-| from_address   | The email used for the from address                 |
-| retry_attempts | How many attempts before moving on to the next host |
-| retry_wait     | How many seconds to sleep before each retry attempt |
+| Field                 | Description   |
+| ---------------       |---------------|
+| smtp_server           | 192.168.1.10                                        |
+| smtp_server_port      | 25,587                     | 
+| smtp_server_type      | plain,tls (google is tls) | 
+| smtp_server_username  | required if using tls                |
+| smtp_server_password  | required if using tls |
+| from_address          | The email used for the from address                 |
+| retry_attempts        | How many attempts before moving on to the next host |
+| retry_wait            | How many seconds to sleep before each retry attempt |
 
 * edit the db/hosts.csv and add in the hosts and for email you can do one email address or multiple
 by "foo@bar.com,foo2@bar.com" Do not put spaces, but wrap in quotes.

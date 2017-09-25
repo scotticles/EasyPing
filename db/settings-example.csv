@@ -1,2 +1,2 @@
-smtp_server,from_address,retry_attempts,retry_wait
-192.168.1.1,"fromme@domain.com",5,10
+smtp_server,smtp_server_port,smtp_server_type,smtp_server_username,smtp_server_password,from_address,retry_attempts,retry_wait
+192.168.1.1,25,plain,"","","fromme@domain.com",5,10

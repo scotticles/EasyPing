@@ -33,6 +33,10 @@ my $settings = $db->getSettings();
 
 #Constants
 my $SMTP_SERVER = $settings->{'smtp_server'};
+my $SMTP_SERVER_PORT = $settings->{'smtp_server_port'};
+my $SMTP_SERVER_TYPE = $settings->{'smtp_server_type'};
+my $SMTP_SERVER_USERNAME = $settings->{'smtp_server_username'};
+my $SMTP_SERVER_PASSWORD = $settings->{'smtp_server_password'};
 my $FROM_ADDRESS = $settings->{'from_address'};
 my $RETRY_ATTEMPTS = $settings->{'retry_attempts'};
 my $RETRY_WAIT = $settings->{'retry_wait'};
@@ -53,7 +57,7 @@ CHECK_LOOP: foreach my $key ( keys %{ $hosts } ) {
             {
                 $db->updateHost(${$hosts}{$key}->{'id'}, 'up');
                 foreach (@users) {
-                        $email->sendMessage($SMTP_SERVER, $FROM_ADDRESS, $_, ${$hosts}{$key}->{'name'}, ${$hosts}{$key}->{'ip'}, 'up');
+                        $email->sendMessage($SMTP_SERVER, $SMTP_SERVER_PORT, $SMTP_SERVER_TYPE, $SMTP_SERVER_USERNAME, $SMTP_SERVER_PASSWORD, $FROM_ADDRESS, $_, ${$hosts}{$key}->{'name'}, ${$hosts}{$key}->{'ip'}, 'up');
                 }
             }
             else
@@ -74,7 +78,7 @@ CHECK_LOOP: foreach my $key ( keys %{ $hosts } ) {
                 if(${$hosts}{$key}->{'status'} eq 'up')
                 {
                     $db->updateHost(${$hosts}{$key}->{'id'}, 'down');
-                    $email->sendMessage($SMTP_SERVER, $FROM_ADDRESS, $_, ${$hosts}{$key}->{'name'}, ${$hosts}{$key}->{'ip'}, 'down');
+                    $email->sendMessage($SMTP_SERVER, $SMTP_SERVER_PORT, $SMTP_SERVER_TYPE, $SMTP_SERVER_USERNAME, $SMTP_SERVER_PASSWORD, $FROM_ADDRESS, $_, ${$hosts}{$key}->{'name'}, ${$hosts}{$key}->{'ip'}, 'down');
                 }
             }
         }
@@ -84,4 +88,4 @@ CHECK_LOOP: foreach my $key ( keys %{ $hosts } ) {
 #Print out the duration of the script, this needs to be under the amount of time cron is set so that it has time to execute
 #If it ends up being slow, Async will need to be applied.
 my $elapsed = tv_interval($startTime, [gettimeofday]);
-print "Execution TIme: ".$elapsed."\n";
+print "Execution Time: ".$elapsed."\n";

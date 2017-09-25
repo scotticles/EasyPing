@@ -1,5 +1,26 @@
 # carton snapshot format: version 1.0
 DISTRIBUTIONS
+  Authen-SASL-2.16
+    pathname: G/GB/GBARR/Authen-SASL-2.16.tar.gz
+    provides:
+      Authen::SASL 2.16
+      Authen::SASL::CRAM_MD5 2.14
+      Authen::SASL::EXTERNAL 2.14
+      Authen::SASL::Perl 2.14
+      Authen::SASL::Perl::ANONYMOUS 2.14
+      Authen::SASL::Perl::CRAM_MD5 2.14
+      Authen::SASL::Perl::DIGEST_MD5 2.14
+      Authen::SASL::Perl::EXTERNAL 2.14
+      Authen::SASL::Perl::GSSAPI 0.05
+      Authen::SASL::Perl::LOGIN 2.14
+      Authen::SASL::Perl::Layer 2.14
+      Authen::SASL::Perl::PLAIN 2.14
+    requirements:
+      Digest::HMAC_MD5 0
+      Digest::MD5 0
+      ExtUtils::MakeMaker 6.42
+      Test::More 0
+      perl 5.005
   B-Hooks-EndOfScope-0.21
     pathname: E/ET/ETHER/B-Hooks-EndOfScope-0.21.tar.gz
     provides:
@@ -151,6 +172,17 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Sub::Exporter::Progressive 0.001011
       perl 5.006
+  Digest-HMAC-1.03
+    pathname: G/GA/GAAS/Digest-HMAC-1.03.tar.gz
+    provides:
+      Digest::HMAC 1.03
+      Digest::HMAC_MD5 1.01
+      Digest::HMAC_SHA1 1.03
+    requirements:
+      Digest::MD5 2
+      Digest::SHA 1
+      ExtUtils::MakeMaker 0
+      perl 5.004
   Dist-CheckConflicts-0.11
     pathname: D/DO/DOY/Dist-CheckConflicts-0.11.tar.gz
     provides:
@@ -163,6 +195,22 @@ DISTRIBUTIONS
       base 0
       strict 0
       warnings 0
+  IO-Socket-SSL-2.051
+    pathname: S/SU/SULLR/IO-Socket-SSL-2.051.tar.gz
+    provides:
+      IO::Socket::SSL 2.051
+      IO::Socket::SSL::Intercept 2.014
+      IO::Socket::SSL::OCSP_Cache 2.051
+      IO::Socket::SSL::OCSP_Resolver 2.051
+      IO::Socket::SSL::PublicSuffix undef
+      IO::Socket::SSL::SSL_Context 2.051
+      IO::Socket::SSL::SSL_HANDLE 2.051
+      IO::Socket::SSL::Session_Cache 2.051
+      IO::Socket::SSL::Utils 2.014
+    requirements:
+      ExtUtils::MakeMaker 0
+      Net::SSLeay 1.46
+      Scalar::Util 0
   Module-Build-0.4224
     pathname: L/LE/LEONT/Module-Build-0.4224.tar.gz
     provides:
@@ -272,6 +320,21 @@ DISTRIBUTIONS
       Carp 0
       ExtUtils::MakeMaker 0
       Socket 0
+  Net-SMTPS-0.08
+    pathname: T/TO/TOMO/src/Net-SMTPS-0.08.tar.gz
+    provides:
+      Net::SMTPS 0.08
+    requirements:
+  Net-SSLeay-1.81
+    pathname: M/MI/MIKEM/Net-SSLeay-1.81.tar.gz
+    provides:
+      Net::SSLeay 1.81
+      Net::SSLeay::Handle 0.61
+    requirements:
+      ExtUtils::MakeMaker 6.36
+      MIME::Base64 0
+      Test::More 0.60_01
+      perl 5.005
   Package-Stash-0.37
     pathname: D/DO/DOY/Package-Stash-0.37.tar.gz
     provides:
