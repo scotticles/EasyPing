@@ -18,7 +18,7 @@ sub sendMessage()
     elsif($smtp_server_type eq 'tls')
     {
         $smtp = Net::SMTPS->new($smtp_server, Debug => 0, Port => $smtp_server_port, doSSL=> 'starttls');
-        $smtp->auth($smtp_server_username, $smtp_server_password);
+        $smtp->auth($smtp_server_username, $smtp_server_password, "LOGIN");
     }
 
     $smtp->mail($from);
