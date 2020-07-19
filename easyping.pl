@@ -1,8 +1,8 @@
 #!/usr/bin/perl
-use strict;
-use warnings FATAL => 'all';
+use Modern::Perl;
 use Time::HiRes qw(gettimeofday tv_interval);
-
+use LWP::UserAgent;
+use Config::Tiny;
 use Data::Dumper;
 print '
 8888888888                        8888888b. d8b
@@ -19,73 +19,233 @@ print '
 my $startTime = [gettimeofday];
 
 #Local Lib
+use FindBin;                 # locate this script
+use lib "$FindBin::Bin";  # use the parent directory
+
 use lib::Database;
-use lib::Ping;
-use lib::Email;
+use lib::Checker;
+use lib::Notification::Email;
+use lib::Notification::Pushover;
+use lib::Common;
+
+#GET ARGS
+my $group;
+if($ARGV[0])
+{
+    $group = $ARGV[0];
+}
 
 #Create objects
-my $ping = Ping->new();
-my $db = Database->new();
-my $email = Email->new();
+my $config = Config::Tiny->read( 'easyping.conf' );
+my $checker = lib::Checker->new( config => $config  );
+my $db = lib::Database->new( config => $config );
+my $email = lib::Notification::Email->new( config => $config );
+my $common = lib::Common->new( config => $config );
+my $pushover = lib::Notification::Pushover->new(config => $config);
 
-my $hosts = $db->getHosts();
+my ($hosts, $totalHost) = $db->getHosts($group);
 my $settings = $db->getSettings();
+my $lwp  = LWP::UserAgent->new(
+    protocols_allowed => ['http', 'https'],
+    timeout           => 10,
+);
 
 #Constants
-my $SMTP_SERVER = $settings->{'smtp_server'};
-my $SMTP_SERVER_PORT = $settings->{'smtp_server_port'};
-my $SMTP_SERVER_TYPE = $settings->{'smtp_server_type'};
-my $SMTP_SERVER_USERNAME = $settings->{'smtp_server_username'};
-my $SMTP_SERVER_PASSWORD = $settings->{'smtp_server_password'};
-my $FROM_ADDRESS = $settings->{'from_address'};
-my $RETRY_ATTEMPTS = $settings->{'retry_attempts'};
-my $RETRY_WAIT = $settings->{'retry_wait'};
+my $RETRY_ATTEMPTS = $config->{_}->{retry_attempts};
+my $RETRY_WAIT = $config->{_}->{retry_wait};
+my $MAX_WORKERS = $config->{_}->{max_workers};
 my $attempts = $RETRY_ATTEMPTS;
 
-#Loop through each host
-CHECK_LOOP: foreach my $key ( keys %{ $hosts } ) {
-    if (${$hosts}{$key}->{'type_check'} eq 'ping') {
-        #print "key: $key, value: ${$hosts}{$key}->{'ip'}\n";
-        my @users = split(",", ${$hosts}{$key}->{'email'});
-        my $pingIP = ${$hosts}{$key}->{'ip'};
+#MCE Config
+use MCE::Loop;
+
+MCE::Loop->init(
+   max_workers => $MAX_WORKERS, chunk_size => 1
+);
+
+mce_loop {
+   my ($mce, $chunk_ref, $chunk_id) = @_;
+    my $hosts = $common->flattenHash($_);
+    my @pushovers = undef;
+    my @emails = undef;
+    if($hosts->{'pushover'})
+    {
+        @pushovers = split(",", $hosts->{'pushover'});
+    }
+    if($hosts->{'email'})
+    {
+        @emails = split(",", $hosts->{'email'});
+    }
+    if($hosts->{'type_check'} eq 'ping')
+    {
+        my $pingIP = $hosts->{'target'};
         $pingIP =~ s/^\s+|\s+$//g;
-        my $result = $ping->pingHost($pingIP);
-        #If Success
-        if ($result) {
-            printf ("SUCCESS ${$hosts}{$key}->{'name'} \@ ${$hosts}{$key}->{'ip'} (packet return time: %.2f ms)\n", $result);
-            if(${$hosts}{$key}->{'status'} eq 'down')
-            {
-                $db->updateHost(${$hosts}{$key}->{'id'}, 'up');
-                foreach (@users) {
-                        $email->sendMessage($SMTP_SERVER, $SMTP_SERVER_PORT, $SMTP_SERVER_TYPE, $SMTP_SERVER_USERNAME, $SMTP_SERVER_PASSWORD, $FROM_ADDRESS, $_, ${$hosts}{$key}->{'name'}, ${$hosts}{$key}->{'ip'}, 'up');
-                }
-            }
-            else
-            {
-                $db->updateHost(${$hosts}{$key}->{'id'}, 'up');
-            }
-        }
-        else {
-            print "FAIL ${$hosts}{$key}->{'name'} \@ ${$hosts}{$key}->{'ip'}\n";
-            if($attempts > 0)
-            {
-                sleep $RETRY_WAIT;
-                $attempts--;
-                redo CHECK_LOOP;
-            }
-            $attempts = $RETRY_ATTEMPTS;
-            foreach (@users) {
-                if(${$hosts}{$key}->{'status'} eq 'up')
+        CHECK_LOOP: while(1) {
+            my $result = $checker->pingHost($pingIP);
+            #If Success
+            if ($result) {
+                if($hosts->{'status'} eq 'down')
                 {
-                    $db->updateHost(${$hosts}{$key}->{'id'}, 'down');
-                    $email->sendMessage($SMTP_SERVER, $SMTP_SERVER_PORT, $SMTP_SERVER_TYPE, $SMTP_SERVER_USERNAME, $SMTP_SERVER_PASSWORD, $FROM_ADDRESS, $_, ${$hosts}{$key}->{'name'}, ${$hosts}{$key}->{'ip'}, 'down');
+                    my $message = sprintf(localtime()." - $hosts->{'name'} - $hosts->{'target'} (packet return time: %.2f ms) - RECOVERED\n", $result);
+                    print $message;
+                    $db->updateHost($hosts->{'id'}, 'up');
+                    foreach (@emails) {
+                        if(defined($_))
+                        {
+                            $email->sendMessage($_, $hosts->{'name'}, $hosts->{'target'}, 'up', $message);
+                        }
+                    }
+                    foreach(@pushovers)
+                    {
+                        if(defined($_))
+                        {
+                            my @pushoverData = split(":", $_);
+                            $pushover->sendMessage($pushoverData[0], $pushoverData[1], "recovered", $message);
+                        }
+                    }
                 }
+                else
+                {
+                    printf (localtime()." - $hosts->{'name'} - $hosts->{'target'} (packet return time: %.2f ms) - SUCCESS\n", $result);
+                    $db->updateHost($hosts->{'id'}, 'up');
+                }
+                last; #exit loop
+            }
+            else {
+                my $message = localtime()." - $hosts->{'name'} - $hosts->{'target'} - FAILED!\n";
+                print $message;
+                if($attempts > 0)
+                {
+                    sleep $RETRY_WAIT;
+                    $attempts--;
+                    redo CHECK_LOOP;
+                }
+                $attempts = $RETRY_ATTEMPTS;
+
+                $db->updateHost($hosts->{'id'}, 'down');
+                if($hosts->{'status'} eq 'up')
+                    {
+                        foreach (@emails) {
+                            if(defined($_))
+                            {
+                                $email->sendMessage($_, $hosts->{'name'}, $hosts->{'target'}, 'down', $message);
+                            }
+                        }
+                        foreach(@pushovers)
+                        {
+                            if(defined($_))
+                            {
+                                my @pushoverData = split(":", $_);
+                                $pushover->sendMessage($pushoverData[0], $pushoverData[1], "down", $message);
+                            }
+                        }
+                    }
+                last; #exit loop
             }
         }
     }
-}
+    elsif($hosts->{'type_check'} eq 'web')
+    {
+        #my @emails = split(",", $hosts->{'email'});
+        CHECK_LOOP: while(1) {
+            my $response = $lwp->head($hosts->{'target'});
+            #warn Dumper($response);
+            if($response->{'_rc'} eq '200')
+            {
+                if($hosts->{'status'} eq 'down')
+                {
+                    my $message = sprintf (localtime()." - $hosts->{'name'} - $hosts->{'target'} (web response ok) - RECOVERED\n");
+                    print $message;
+                    $db->updateHost($hosts->{'id'}, 'up');
+                    foreach (@emails) {
+                        if(defined($_))
+                        {
+                            $email->sendMessage($_, $hosts->{'name'}, $hosts->{'target'}, 'up', $message);
+                        }
+                    }
+                    foreach(@pushovers)
+                    {
+                        if(defined($_))
+                        {
+                            my @pushoverData = split(":", $_);
+                            $pushover->sendMessage($pushoverData[0], $pushoverData[1], "recovered", $message);
+                        }
+                    }
+                }
+                else
+                {
+                    printf (localtime()." - $hosts->{'name'} - $hosts->{'target'} (web response ok) - SUCCESS\n");
+                    $db->updateHost($hosts->{'id'}, 'up');
+                }
+                last; #exit loop
+            }
+            else
+            {
+                my $message = localtime()." - $hosts->{'name'} - $hosts->{'target'} (web response ".$response->{'_rc'}.") - FAILED!";
+                say $message;
+                if($attempts > 0)
+                {
+                    sleep $RETRY_WAIT;
+                    $attempts--;
+                    redo CHECK_LOOP;
+                }
+                $attempts = $RETRY_ATTEMPTS;
+                $db->updateHost($hosts->{'id'}, 'down');
+                if($hosts->{'status'} eq 'up')
+                    {
+                        foreach (@emails) {
+                            if(defined($_))
+                            {
+                                $email->sendMessage($_, $hosts->{'name'}, $hosts->{'target'}, 'down', $message);
+                            }
+                        }
+                        foreach(@pushovers)
+                        {
+                            if(defined($_))
+                            {
+                                my @pushoverData = split(":", $_);
+                                $pushover->sendMessage($pushoverData[0], $pushoverData[1], "down", $message);
+                            }
+                        }
+                    }
+                last; #exit loop
+            }
+        }
+    }
+    elsif($hosts->{'type_check'} eq 'script')
+    {
+        use Capture::Tiny qw/capture/;
+
+        my ($stdout, $stderr) = capture {
+            #system ( "snmpwalk -v $version -c $community $hostname $oid" );
+            #qx($hosts->{'target'});
+            system ($hosts->{"target"});
+        };
+        warn $stdout;
+        my $exit = $? >> 8;
+=head 
+        if(!$output)
+        {
+            warn "ERROR IN SCRIPT";
+            
+        }
+        else{
+            my $exit = $? >> 8;
+            warn "EXIT CODE: ".$exit;
+        }
+=cut
+        #warn $out;
+        #warn "EXIT CODE: ".$exit;
+    }
+} $hosts;
 
 #Print out the duration of the script, this needs to be under the amount of time cron is set so that it has time to execute
 #If it ends up being slow, Async will need to be applied.
 my $elapsed = tv_interval($startTime, [gettimeofday]);
 print "Execution Time: ".$elapsed."\n";
+
+#my $out = system "perl testscript.pl";
+#say $? >> 8;
+
+#my $out = `perl testscript.pl`;
+#say $out;

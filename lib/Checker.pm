@@ -1,7 +1,5 @@
-package Ping;
-use strict;
-use warnings FATAL => 'all';
-
+package lib::Checker;
+use Modern::Perl;
 use Moo;
 use Net::Ping;
 use namespace::clean;
