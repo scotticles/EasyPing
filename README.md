@@ -13,11 +13,11 @@
 
 ## Description
 
-EasyPing was written to ping devices such as network switches or critical points on a network and notify me and any co-worker(s) when the devices went up or down. I already use monitoring tools but those collect more then just a ping and are often a bother to do a simple ping task. I needed to have a ping solution that would notify me. There are plenty of tools out there that already do this but I wanted a simple script to do it without having a database backend service and having a web gui.
+EasyPing was written to ping devices such as network switches or critical points on a network and notify me and any co-worker(s) when the devices went up or down. I already use monitoring tools but those collect more then just a ping and are often a bother to do a simple ping task. I needed to have a ping solution that would notify me without the hassle. There are plenty of tools out there that already do this but I wanted a simple script to do it without having a database backend service and having a web gui.
 
 I picked a CSV file as the database table so that its easy to edit in a text editor such as vim or nano.
 
-My current setup sends me emails for some of the devices and for more critical, I use my Pushover for my more critical things. I implemented Web checks and Script running which has made it a wrapper for cron job scripts with better notifications.
+My current setup sends me emails for some of the devices, I use Pushover for my more critical things. I implemented Web checks and Script running which has made it a wrapper for cron job scripts with better notifications.
 
 This system works well and hopefully it will help you out if you go with it.
 
@@ -27,7 +27,7 @@ I am open to improvements and feature requests.
 
 * Ping Checks (ipv4, I dont think ipv6 will work)
 * Web Checks (http, https)
-* Scripts
+* Script Running
 * Parallelism - runs multiple checks at the same time (x workers)
 * CSV Backend (SUPER Easy to edit)
 * Groups for Cron jobs - put hosts in groups and run them when you want to check that group
@@ -61,23 +61,24 @@ To install extract the release with tar xvzf EasyPing_0.1.tar.gz or git clone
 * `cp db/hosts-example.csv db/hosts.csv`
 * edit the easyping.conf and adjust the following fields
 
-| Field                 | Description   |
-| ---------------       |---------------|
-| smtp_server           | 192.168.1.10                                          |
-| smtp_server_port      | 25,587                                                | 
-| smtp_server_type      | plain,tls (google is tls)                             | 
-| smtp_server_username  | required if using tls                                 |
-| smtp_server_password  | required if using tls                                 |
-| from_address          | The email used for the from address                   |
-| retry_attempts        | How many attempts before moving on to the next host   |
-| retry_wait            | How many seconds to sleep before each retry attempt   |
-| max_workers           | How many parallel workers do you want? (start with 3) |
+| Field                  | Description   |
+| ---------------        |---------------|
+| retry_attempts         | How many attempts before moving on to the next host   |
+| retry_wait             | How many seconds to sleep before each retry attempt   |
+| max_workers            | How many parallel workers do you want? (start with 3) |
+| [SMTP] server_address  | 192.168.1.10                                          |
+| [SMTP] server_port     | 25,587                                                | 
+| [SMTP] server_type     | plain,tls (google is tls)                             | 
+| [SMTP] server_username | required if using tls                                 |
+| [SMTP] server_password | required if using tls                                 |
+| [SMTP] from_address    | The email used for the from address                   |
+
 
 * edit the db/hosts.csv and add in the hosts and for email you can do one email address or multiple
 by "foo@bar.com,foo2@bar.com" 
 ** Do not put spaces, and you must wrap in quotes. **
 
-id,name,ip,status,type_check,email
+id,group,name,target,status,type_check,email,pushover
 
 | Field          | Description   |
 | ---------------|---------------|
