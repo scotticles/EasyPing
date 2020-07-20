@@ -31,18 +31,6 @@ sub createTables
         )");
 }
 
-sub getSettings
-{
-    my $self = shift;
-    my $dbh = $self->_getDB();
-    my $query = "SELECT * FROM settings";
-    my $sth   = $dbh->prepare ($query);
-    $sth->execute ();
-    my $data = $sth->fetchrow_hashref();
-    $sth->finish ();
-    return $data;
-}
-
 sub getHosts 
 {
     my ($self, $group) = @_;
@@ -78,5 +66,29 @@ sub updateHost()
     $sth->finish;
     $dbh->disconnect;
 }
-
+sub removeHost
+{
+    my $self = shift;
+    my $id = shift;
+    my $dbh = $self->_getDB();
+    my $sth = $dbh->prepare ("DELETE FROM hosts WHERE id = ?");
+    $sth->execute ($id);
+    $sth->finish;
+    $dbh->disconnect;
+}
+sub addHost()
+{
+    my ($self, $group, $name, $host, $type_check, $email, $pushover) = @_;
+    my $dbh = $self->_getDB();
+    my $sth = $dbh->prepare("select max(id) from hosts");
+    $sth->execute();
+    my $max = $sth->fetchrow_hashref->{'MAX'};
+    my $id = $max+1;
+    $sth = $dbh->prepare ("INSERT INTO hosts (
+    id,group,name,host,status,type_check,email,pushover)
+    VALUES (?, ?, ?, ?, 'up', ?, ?, ?)");
+    $sth->execute ($id,$group, $name, $host, $type_check, $email, $pushover);
+    $sth->finish;
+    $dbh->disconnect;
+}
 1;

@@ -40,12 +40,14 @@ I am open to improvements and feature requests.
 
 ## How to Install
 
-#### Requirements: 
+### Requirements: 
 
  * Linux
  * Perl 5.10+
- * SMTP Server (Does not do user/pass or TLS/SSL at this time)
+ * (optional) SMTP Server (Does not do user/pass or TLS/SSL at this time)
+ * (optional) Pushover
 
+### Installation:
 To install extract the release with tar xvzf EasyPing_0.1.tar.gz or git clone
 `git clone https://github.com/scotticles/EasyPing.git`
 
@@ -56,6 +58,8 @@ To install extract the release with tar xvzf EasyPing_0.1.tar.gz or git clone
 * `carton install --deployment` <-- run this after updating from git
 
 ![alt text](https://github.com/scotticles/EasyPing/raw/master/screenshots/screenshot-1.png "Carton Install")
+
+### Set up
 
 * `cp easyping-example.conf easyping.conf`
 * `cp db/hosts-example.csv db/hosts.csv`
@@ -73,24 +77,28 @@ To install extract the release with tar xvzf EasyPing_0.1.tar.gz or git clone
 | [SMTP] server_password | required if using tls                                 |
 | [SMTP] from_address    | The email used for the from address                   |
 
+### Hosts
+
+You have two options, you can edit the csv or you can use the CLI. See the CLI section below.
 
 * edit the db/hosts.csv and add in the hosts and for email you can do one email address or multiple
 by "foo@bar.com,foo2@bar.com" 
 ** Do not put spaces, and you must wrap in quotes. **
 
-id,group,name,target,status,type_check,email,pushover
+
 
 | Field          | Description   |
 | ---------------|---------------|
 | id         | A unique id for each host                                                         |
 | group      | Group Name to put the host in                                                     |
 | name       | Name of the host                                                                  |
-| target     | IP Address of the host, website, or script to run                                 |
+| hosts      | IP Address of the host, website, or script to run                                 |
 | status     | up,down, set it to up                                                             |
 | type_check | ping, potential for other type of checks in future versions                       |
 | email      | the email to send the notifications to "foo@bar.com" or "foo@bar.com,foo2@bar.com"|
 | pushover   | the field needs to have the "token:user" and for multiple, "token:user,token:user", example  "23dfe234fds:23423d2f23" |
 
+### Finishing Setup
 
 Once the config and hosts have been created you can run the script with the following command:
 * edit easyping.cron.sh to match the paths
@@ -111,21 +119,32 @@ The script needs an exit code of 0 to be successful. Make sure it has an exit co
 ## How to Cron
 * `vim /etc/cron.d/easyping`
 * Without Groups
-    * `*/5 * * * * scott /opt/EasyPing/cron.sh > /tmp/easyping.log`
+    * `*/5 * * * * scott /opt/EasyPing/easyping.cron.sh > /tmp/easyping.log`
 * With Groups
-    * `*/10 * * * * scott /opt/EasyPing/cron.sh groupA > /tmp/easyping.log`
-    * `0 1 * * * scott /opt/EasyPing/cron.sh webHosts > /tmp/easyping.log`
+    * `*/10 * * * * scott /opt/EasyPing/easyping.cron.sh groupA > /tmp/easyping.log`
+    * `0 1 * * * scott /opt/EasyPing/easyping.cron.sh webHosts > /tmp/easyping.log`
 
 This will output data that is seen from running it manual to the /tmp/easyping.log file. This could 
 be helpful for troubleshooting later on or to check the return times of success pings.
 
+## Command Line
+You can access this by `carton exec ./easyping.pl --help`
+```
+======== COMMANDS ========
+-g --group <group>       picks the group to run
+-n --nobanner            removes the banner
+-c --cron                used for cron mode (removes banner and start,stop execution times
+-h --host <add|remove|list> manage hosts
+```
+
+# TODO:
 ## Logrotate
 You will want to add in logrotate file to keep the logs from eating up storage.
 
 ## Status Page and Button
 If set in settings PNG files will be created after a run that can be used on websites.
-### Deployment Options
 
+### Deployment Options
 Because of browser caching, you'll want to append a timestamp on the page load. You'll want it to be something like this below. Adds a ` ?timestamp=x `, this will gurantee no caching.
  
 ` <img src='myeasypingurl/statusButton.png?timestamp=324324242'> `

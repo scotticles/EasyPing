@@ -13,3 +13,4 @@ requires 'LWP::Protocol::https', '';
 requires 'Config::Tiny', '';
 requires 'Net::Pushover', '';
 requires 'Capture::Tiny', '';
+requires 'Getopt::Long', '';
