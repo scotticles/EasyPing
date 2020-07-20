@@ -64,6 +64,17 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  Class-XSAccessor-1.19
+    pathname: S/SM/SMUELLER/Class-XSAccessor-1.19.tar.gz
+    provides:
+      Class::XSAccessor 1.19
+      Class::XSAccessor::Array 1.19
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0
+      Time::HiRes 0
+      XSLoader 0
+      perl 5.008
   Clone-0.39
     pathname: G/GA/GARU/Clone-0.39.tar.gz
     provides:
@@ -748,6 +759,25 @@ DISTRIBUTIONS
       Scalar::Util 1.18
       Test::More 0.42
       perl 5.00503
+  Params-Validate-1.29
+    pathname: D/DR/DROLSKY/Params-Validate-1.29.tar.gz
+    provides:
+      Params::Validate 1.29
+      Params::Validate::Constants 1.29
+      Params::Validate::PP 1.29
+      Params::Validate::XS 1.29
+    requirements:
+      Carp 0
+      Exporter 0
+      ExtUtils::CBuilder 0
+      Module::Build 0.28
+      Module::Implementation 0
+      Scalar::Util 1.10
+      XSLoader 0
+      perl 5.008001
+      strict 0
+      vars 0
+      warnings 0
   Role-Tiny-2.000005
     pathname: H/HA/HAARG/Role-Tiny-2.000005.tar.gz
     provides:
@@ -836,6 +866,25 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Scalar::Util 0
       perl 5.006
+  Term-Table2-1.0.3
+    pathname: J/JS/JSF/Term-Table2-1.0.3.tar.gz
+    provides:
+      Term::Table2 1.000003
+    requirements:
+      Class::XSAccessor 0
+      ExtUtils::MakeMaker 0
+      List::Util 0
+      Module::Load 0
+      POSIX 0
+      Params::Validate 0
+      Term::ReadKey 0
+      perl 5.014
+  TermReadKey-2.38
+    pathname: J/JS/JSTOWE/TermReadKey-2.38.tar.gz
+    provides:
+      Term::ReadKey 2.38
+    requirements:
+      ExtUtils::MakeMaker 6.58
   Text-CSV_XS-1.32
     pathname: H/HM/HMBRAND/Text-CSV_XS-1.32.tgz
     provides:

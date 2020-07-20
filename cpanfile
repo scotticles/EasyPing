@@ -14,3 +14,4 @@ requires 'Config::Tiny', '';
 requires 'Net::Pushover', '';
 requires 'Capture::Tiny', '';
 requires 'Getopt::Long', '';
+requires 'Term::Table2', '';
