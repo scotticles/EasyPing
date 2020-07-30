@@ -1,7 +1,7 @@
 # EasyPing
 
 #### Version 0.3
-
+![alt text](https://github.com/scotticles/EasyPing/raw/master/screenshots/screenshot.png "Run Screenshot")
 ## Description
 
 EasyPing was written to ping devices such as network switches or critical points on a network and notify me and any co-worker(s) when the devices went up or down. I already use monitoring tools but those collect more then just a ping and are often a bother to do a simple ping task. I needed to have a ping solution that would notify me without the hassle. There are plenty of tools out there that already do this but I wanted a simple script to do it without having a database backend service and having a web gui.
