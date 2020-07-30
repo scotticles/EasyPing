@@ -1,2 +1,1 @@
-id,group,name,host,status,type_check,email
-1,groupA,deviceA,192.168.1.2,up,ping,"email@domain.com"
+id,group,name,host,status,type_check,email,pushover

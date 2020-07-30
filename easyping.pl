@@ -355,5 +355,5 @@ STDERR: ".$stderr;
 #If it ends up being slow, Async will need to be applied.
 if(!$menu_cron) {
     my $elapsed = tv_interval($startTime, [gettimeofday]);
-    print "Execution Time: ".$elapsed."\n";
+    print "Execution Time: ".$elapsed."\nHosts: ".$totalHost."\n";
 }
