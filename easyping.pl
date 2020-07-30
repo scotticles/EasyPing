@@ -239,22 +239,22 @@ mce_loop {
                 $attempts = $RETRY_ATTEMPTS;
                 $db->updateHost($hosts->{'id'}, 'down');
                 if($hosts->{'status'} eq 'up')
-                    {
-                        foreach (@emails) {
-                            if(defined($_))
-                            {
-                                $email->sendMessage($_, $hosts->{'name'}, $hosts->{'host'}, 'down', $message);
-                            }
-                        }
-                        foreach(@pushovers)
+                {
+                    foreach (@emails) {
+                        if(defined($_))
                         {
-                            if(defined($_))
-                            {
-                                my @pushoverData = split(":", $_);
-                                $pushover->sendMessage($pushoverData[0], $pushoverData[1], "down", $message);
-                            }
+                            $email->sendMessage($_, $hosts->{'name'}, $hosts->{'host'}, 'down', $message);
                         }
                     }
+                    foreach(@pushovers)
+                    {
+                        if(defined($_))
+                        {
+                            my @pushoverData = split(":", $_);
+                            $pushover->sendMessage($pushoverData[0], $pushoverData[1], "down", $message);
+                        }
+                    }
+                }
                 last; #exit loop
             }
         }
@@ -263,26 +263,91 @@ mce_loop {
     {
         use Capture::Tiny qw/capture/;
 
+        CHECK_LOOP: while(1) {
+        #my $response = $lwp->head($hosts->{'host'});
         my ($stdout, $stderr) = capture {
-            #system ( "snmpwalk -v $version -c $community $hostname $oid" );
-            #qx($hosts->{'host'});
-            system ($hosts->{"target"});
-        };
+                #system ( "snmpwalk -v $version -c $community $hostname $oid" );
+                #qx($hosts->{'host'});
+                system($hosts->{"host"});
+            };
         #warn $stdout;
         my $exit = $? >> 8;
-=head 
-        if(!$output)
+
+        #warn Dumper($response);
+        if($exit == 0)
         {
-            warn "ERROR IN SCRIPT";
-            
+            if($hosts->{'status'} eq 'down')
+            {
+                my $message = sprintf (localtime()." - $hosts->{'name'} - $hosts->{'host'} - RECOVERED\n");
+                if($config->{SCRIPTING}->{'ONSUCCESS_STDOUT'} && $stdout)
+                {
+                    $message .= "STDOUT: ".$stdout."\n";
+                }
+                print $message;
+                $db->updateHost($hosts->{'id'}, 'up');
+                foreach (@emails) {
+                    if(defined($_))
+                    {
+                        $email->sendMessage($_, $hosts->{'name'}, $hosts->{'host'}, 'up', $message);
+                    }
+                }
+                foreach(@pushovers)
+                {
+                    if(defined($_))
+                    {
+                        my @pushoverData = split(":", $_);
+                        $pushover->sendMessage($pushoverData[0], $pushoverData[1], "recovered", $message);
+                    }
+                }
+            }
+            else
+            {
+                printf (localtime()." - $hosts->{'name'} - $hosts->{'host'} - SUCCESS\n");
+                if($config->{SCRIPTING}->{'ONSUCCESS_STDOUT'} && $stdout)
+                {
+                    say "STDOUT: ".$stdout;
+                }
+                $db->updateHost($hosts->{'id'}, 'up');
+            }
+            last; #exit loop
         }
-        else{
-            my $exit = $? >> 8;
-            warn "EXIT CODE: ".$exit;
+        else
+        {
+            my $message = localtime()." - $hosts->{'name'} - $hosts->{'host'} - FAILED!
+Exit Code: ".$exit."
+-------------------
+STDOUT: ".$stdout."
+-------------------
+STDERR: ".$stderr;
+            say $message;
+            if($attempts > 0)
+            {
+                sleep $RETRY_WAIT;
+                $attempts--;
+                redo CHECK_LOOP;
+            }
+            $attempts = $RETRY_ATTEMPTS;
+            $db->updateHost($hosts->{'id'}, 'down');
+            if($hosts->{'status'} eq 'up')
+            {
+                foreach (@emails) {
+                    if(defined($_))
+                    {
+                        $email->sendMessage($_, $hosts->{'name'}, $hosts->{'host'}, 'down', $message);
+                    }
+                }
+                foreach(@pushovers)
+                {
+                    if(defined($_))
+                    {
+                        my @pushoverData = split(":", $_);
+                        $pushover->sendMessage($pushoverData[0], $pushoverData[1], "down", $message);
+                    }
+                }
+            }
+            last; #exit loop
         }
-=cut
-        #warn $out;
-        #warn "EXIT CODE: ".$exit;
+        }
     }
 } $hosts;
 

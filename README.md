@@ -1,15 +1,6 @@
 # EasyPing
 
-#### Version 0.2
-
-## TODO
-* implement GD
-    * small button with green or red status (used for a website link)
-    * a status page png file that can be embedded
-    * documentation on how to use the images
-        * apache/nginx
-        * scp to webhost
-* logrotate example
+#### Version 0.3
 
 ## Description
 
@@ -33,127 +24,49 @@ I am open to improvements and feature requests.
 * Groups for Cron jobs - put hosts in groups and run them when you want to check that group
 * Notifications ( SMTP/Email, Pushover )
 * Notification on Fail (Retries x times and if it fails, it will then send the email but you'll only receive one)
-* Notificaiton on Recovery
+* Notification on Recovery
 * Easy to deploy
 
 **I will eventually get around to adding a license on to this.**
 
-## How to Install
-
-### Requirements: 
+## Requirements: 
 
  * Linux
  * Perl 5.10+
  * (optional) SMTP Server (Does not do user/pass or TLS/SSL at this time)
  * (optional) Pushover
 
-### Installation:
-To install extract the release with tar xvzf EasyPing_0.1.tar.gz or git clone
-`git clone https://github.com/scotticles/EasyPing.git`
+## WIKI Menu
+* [Installation](https://github.com/scotticles/EasyPing/wiki/Installation)
+* [Adding Hosts](https://github.com/scotticles/EasyPing/wiki/Adding-hosts)
+* [Cron Scheduling Runs](https://github.com/scotticles/EasyPing/wiki/Cron-Scheduling-Runs)
+* [Writing and Running Scripts](https://github.com/scotticles/EasyPing/wiki/Writing-and-Running-Scripts)
+* [Command Line Commands](https://github.com/scotticles/EasyPing/wiki/Command-line-Commands)
 
-* `cd EasyPing dir`
-* `sudo apt-get install libdev-ssl` or `libssl-dev` depending on distribution
-* `sudo apt-get install zlib1g-dev` or a variant of that
-* `sudo apt-get install carton`
-* `carton install --deployment` <-- run this after updating from git
-
-![alt text](https://github.com/scotticles/EasyPing/raw/master/screenshots/screenshot-1.png "Carton Install")
-
-### Set up
-
-* `cp easyping-example.conf easyping.conf`
-* `cp db/hosts-example.csv db/hosts.csv`
-* edit the easyping.conf and adjust the following fields
-
-| Field                  | Description   |
-| ---------------        |---------------|
-| retry_attempts         | How many attempts before moving on to the next host   |
-| retry_wait             | How many seconds to sleep before each retry attempt   |
-| max_workers            | How many parallel workers do you want? (start with 3) |
-| [SMTP] server_address  | 192.168.1.10                                          |
-| [SMTP] server_port     | 25,587                                                | 
-| [SMTP] server_type     | plain,tls (google is tls)                             | 
-| [SMTP] server_username | required if using tls                                 |
-| [SMTP] server_password | required if using tls                                 |
-| [SMTP] from_address    | The email used for the from address                   |
-
-### Hosts
-
-You have two options, you can edit the csv or you can use the CLI. See the CLI section below.
-
-* edit the db/hosts.csv and add in the hosts and for email you can do one email address or multiple
-by "foo@bar.com,foo2@bar.com" 
-** Do not put spaces, and you must wrap in quotes. **
-
-
-
-| Field          | Description   |
-| ---------------|---------------|
-| id         | A unique id for each host                                                         |
-| group      | Group Name to put the host in                                                     |
-| name       | Name of the host                                                                  |
-| hosts      | IP Address of the host, website, or script to run                                 |
-| status     | up,down, set it to up                                                             |
-| type_check | ping, potential for other type of checks in future versions                       |
-| email      | the email to send the notifications to "foo@bar.com" or "foo@bar.com,foo2@bar.com"|
-| pushover   | the field needs to have the "token:user" and for multiple, "token:user,token:user", example  "23dfe234fds:23423d2f23" |
-
-### Finishing Setup
-
-Once the config and hosts have been created you can run the script with the following command:
-* edit easyping.cron.sh to match the paths
-* `sudo chmod +x easyping.cron.sh` make it executable
-* `carton exec /path/to/easyping.pl` this needs to be the full path
-
-
-![alt text](https://github.com/scotticles/EasyPing/raw/master/screenshots/screenshot.png "Run Screenshot")
-
-This should output SUCCESS, FAIL or RECOVERED.
- 
-
-## Running Scripts
-The scripts will run and needs the full path to the script in the target field wrapped in quotes. Example: `perl /path/to/script.pl`.
-
-The script needs an exit code of 0 to be successful. Make sure it has an exit code of 0. If the script does fail to run it will also fail.
-
-## How to Cron
-* `vim /etc/cron.d/easyping`
-* Without Groups
-    * `*/5 * * * * scott /opt/EasyPing/easyping.cron.sh > /tmp/easyping.log`
-* With Groups
-    * `*/10 * * * * scott /opt/EasyPing/easyping.cron.sh groupA > /tmp/easyping.log`
-    * `0 1 * * * scott /opt/EasyPing/easyping.cron.sh webHosts > /tmp/easyping.log`
-
-This will output data that is seen from running it manual to the /tmp/easyping.log file. This could 
-be helpful for troubleshooting later on or to check the return times of success pings.
-
-## Command Line
-You can access this by `carton exec ./easyping.pl --help`
-```
-======== COMMANDS ========
--g --group <group>       picks the group to run
--n --nobanner            removes the banner
--c --cron                used for cron mode (removes banner and start,stop execution times
--h --host <add|remove|list> manage hosts
-```
-
-# TODO:
-## Logrotate
+#### TODO / thoughts:
+* implement GD
+    * small button with green or red status (used for a website link)
+    * a status page png file that can be embedded
+    * documentation on how to use the images
+        * apache/nginx
+        * scp to webhost
+* logrotate example
+##### Logrotate
 You will want to add in logrotate file to keep the logs from eating up storage.
 
-## Status Page and Button
+##### Status Page and Button
 If set in settings PNG files will be created after a run that can be used on websites.
 
-### Deployment Options
+##### Deployment Options
 Because of browser caching, you'll want to append a timestamp on the page load. You'll want it to be something like this below. Adds a ` ?timestamp=x `, this will gurantee no caching.
  
 ` <img src='myeasypingurl/statusButton.png?timestamp=324324242'> `
 
-#### Apache/Nginx
+###### Apache/Nginx
 You could use apache/nginx to server the output directory and then from the website load the img tags
 * ` <img src='myeasypingurl/statusButton.png'> `
 * ` <img src='myeasypingurl/statusOverview.png'> `
 * ` <img src='myeasypingurl/statusGroupA.png'> `
 
-#### SCP/SFTP
+##### SCP/SFTP
 You could scp the output folder to the webserver and then create a cron task to put them where they need to go on the webserver.
