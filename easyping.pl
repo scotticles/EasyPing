@@ -9,12 +9,14 @@ use Data::Dumper;
 
 #Local Lib
 use FindBin;                 # locate this script
-use lib "$FindBin::Bin";  # use the parent directory
+use lib "$FindBin::Bin";     # use the parent directory
 
 use lib::Database;
 use lib::Checker;
 use lib::Notification::Email;
 use lib::Notification::Pushover;
+use lib::Notification::Slack;
+use lib::Notification::GoogleChat;
 use lib::Common;
 use lib::Host;
 
@@ -70,6 +72,8 @@ my $db = lib::Database->new( config => $config );
 my $email = lib::Notification::Email->new( config => $config );
 my $common = lib::Common->new( config => $config );
 my $pushover = lib::Notification::Pushover->new(config => $config);
+my $googleChat = lib::Notification::GoogleChat->new(config => $config);
+my $slack = lib::Notification::Slack->new(config => $config);
 my $host = lib::Host->new();
 
 my ($hosts, $totalHost) = $db->getHosts($group);
@@ -115,6 +119,7 @@ mce_loop {
     my $hosts = $common->flattenHash($_);
     my @pushovers = undef;
     my @emails = undef;
+    my @webhooks = undef;
     if($hosts->{'pushover'})
     {
         @pushovers = split(",", $hosts->{'pushover'});
@@ -122,6 +127,10 @@ mce_loop {
     if($hosts->{'email'})
     {
         @emails = split(",", $hosts->{'email'});
+    }
+    if($hosts->{'webhook'})
+    {
+        @webhooks = split(",", $hosts->{'webhook'});
     }
     if($hosts->{'type_check'} eq 'ping')
     {
@@ -139,7 +148,7 @@ mce_loop {
                     foreach (@emails) {
                         if(defined($_))
                         {
-                            $email->sendMessage($_, $hosts->{'name'}, $hosts->{'host'}, 'up', $message);
+                            $email->sendMessage($_, $hosts->{'name'}, $hosts->{'host'}, 'recovered', $message);
                         }
                     }
                     foreach(@pushovers)
@@ -148,6 +157,21 @@ mce_loop {
                         {
                             my @pushoverData = split(":", $_);
                             $pushover->sendMessage($pushoverData[0], $pushoverData[1], "recovered", $message);
+                        }
+                    }
+                    foreach(@webhooks)
+                    {
+                        if(defined($_))
+                        {
+                            my @webhookData = split(":", $_);
+                            if($webhookData[0] eq 'slack')
+                            {
+                                $slack->sendMessage($webhookData[1].":".$webhookData[2], $message);
+                            }
+                            if($webhookData[0] eq 'gchat')
+                            {
+                                $googleChat->sendMessage($webhookData[1].":".$webhookData[2], $message);
+                            }
                         }
                     }
                 }
@@ -186,6 +210,21 @@ mce_loop {
                                 $pushover->sendMessage($pushoverData[0], $pushoverData[1], "down", $message);
                             }
                         }
+                        foreach(@webhooks)
+                        {
+                            if(defined($_))
+                            {
+                                my @webhookData = split(":", $_);
+                                if($webhookData[0] eq 'slack')
+                                {
+                                    $slack->sendMessage($webhookData[1].":".$webhookData[2], $message);
+                                }
+                                if($webhookData[0] eq 'gchat')
+                                {
+                                    $googleChat->sendMessage($webhookData[1].":".$webhookData[2], $message);
+                                }
+                            }
+                        }
                     }
                 last; #exit loop
             }
@@ -207,7 +246,7 @@ mce_loop {
                     foreach (@emails) {
                         if(defined($_))
                         {
-                            $email->sendMessage($_, $hosts->{'name'}, $hosts->{'host'}, 'up', $message);
+                            $email->sendMessage($_, $hosts->{'name'}, $hosts->{'host'}, 'recovered', $message);
                         }
                     }
                     foreach(@pushovers)
@@ -216,6 +255,21 @@ mce_loop {
                         {
                             my @pushoverData = split(":", $_);
                             $pushover->sendMessage($pushoverData[0], $pushoverData[1], "recovered", $message);
+                        }
+                    }
+                    foreach(@webhooks)
+                    {
+                        if(defined($_))
+                        {
+                            my @webhookData = split(":", $_);
+                            if($webhookData[0] eq 'slack')
+                            {
+                                $slack->sendMessage($webhookData[1].":".$webhookData[2], $message);
+                            }
+                            if($webhookData[0] eq 'gchat')
+                            {
+                                $googleChat->sendMessage($webhookData[1].":".$webhookData[2], $message);
+                            }
                         }
                     }
                 }
@@ -254,6 +308,21 @@ mce_loop {
                             $pushover->sendMessage($pushoverData[0], $pushoverData[1], "down", $message);
                         }
                     }
+                    foreach(@webhooks)
+                    {
+                        if(defined($_))
+                        {
+                            my @webhookData = split(":", $_);
+                            if($webhookData[0] eq 'slack')
+                            {
+                                $slack->sendMessage($webhookData[1].":".$webhookData[2], $message);
+                            }
+                            if($webhookData[0] eq 'gchat')
+                            {
+                                $googleChat->sendMessage($webhookData[1].":".$webhookData[2], $message);
+                            }
+                        }
+                    }
                 }
                 last; #exit loop
             }
@@ -288,7 +357,7 @@ mce_loop {
                 foreach (@emails) {
                     if(defined($_))
                     {
-                        $email->sendMessage($_, $hosts->{'name'}, $hosts->{'host'}, 'up', $message);
+                        $email->sendMessage($_, $hosts->{'name'}, $hosts->{'host'}, 'recovered', $message);
                     }
                 }
                 foreach(@pushovers)
@@ -299,6 +368,21 @@ mce_loop {
                         $pushover->sendMessage($pushoverData[0], $pushoverData[1], "recovered", $message);
                     }
                 }
+                foreach(@webhooks)
+                {
+                    if(defined($_))
+                    {
+                        my @webhookData = split(":", $_);
+                        if($webhookData[0] eq 'slack')
+                        {
+                            $slack->sendMessage($webhookData[1].":".$webhookData[2], $message);
+                        }
+                        if($webhookData[0] eq 'gchat')
+                        {
+                            $googleChat->sendMessage($webhookData[1].":".$webhookData[2], $message);
+                        }
+                    }
+                    }
             }
             else
             {
@@ -342,6 +426,21 @@ STDERR: ".$stderr;
                     {
                         my @pushoverData = split(":", $_);
                         $pushover->sendMessage($pushoverData[0], $pushoverData[1], "down", $message);
+                    }
+                }
+                foreach(@webhooks)
+                {
+                    if(defined($_))
+                    {
+                        my @webhookData = split(":", $_);
+                        if($webhookData[0] eq 'slack')
+                        {
+                            $slack->sendMessage($webhookData[1].":".$webhookData[2], $message);
+                        }
+                        if($webhookData[0] eq 'gchat')
+                        {
+                            $googleChat->sendMessage($webhookData[1].":".$webhookData[2], $message);
+                        }
                     }
                 }
             }

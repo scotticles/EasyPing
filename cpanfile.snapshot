@@ -94,6 +94,22 @@ DISTRIBUTIONS
       UNIVERSAL 0
       strict 0
       utf8 0
+  Cpanel-JSON-XS-4.19
+    pathname: R/RU/RURBAN/Cpanel-JSON-XS-4.19.tar.gz
+    provides:
+      Cpanel::JSON::XS 4.19
+      Cpanel::JSON::XS::Type undef
+    requirements:
+      Carp 0
+      Config 0
+      Encode 1.9801
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      Pod::Text 2.08
+      XSLoader 0
+      overload 0
+      strict 0
+      warnings 0
   DBD-CSV-0.49
     pathname: H/HM/HMBRAND/DBD-CSV-0.49.tgz
     provides:
@@ -202,6 +218,17 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.48
       Test::Simple 0.90
       perl 5.008
+  Data-OptList-0.110
+    pathname: R/RJ/RJBS/Data-OptList-0.110.tar.gz
+    provides:
+      Data::OptList 0.110
+    requirements:
+      ExtUtils::MakeMaker 0
+      List::Util 0
+      Params::Util 0
+      Sub::Install 0.921
+      strict 0
+      warnings 0
   Devel-GlobalDestruction-0.14
     pathname: H/HA/HAARG/Devel-GlobalDestruction-0.14.tar.gz
     provides:
@@ -242,6 +269,14 @@ DISTRIBUTIONS
       Encode::Alias 0
       ExtUtils::MakeMaker 0
       perl 5.008
+  Exporter-Tiny-1.002002
+    pathname: T/TO/TOBYINK/Exporter-Tiny-1.002002.tar.gz
+    provides:
+      Exporter::Shiny 1.002002
+      Exporter::Tiny 1.002002
+    requirements:
+      ExtUtils::MakeMaker 6.17
+      perl 5.006001
   ExtUtils-Config-0.008
     pathname: L/LE/LEONT/ExtUtils-Config-0.008.tar.gz
     provides:
@@ -294,6 +329,25 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       HTTP::Date 6
       perl 5.006002
+  Getopt-Long-Descriptive-0.105
+    pathname: R/RJ/RJBS/Getopt-Long-Descriptive-0.105.tar.gz
+    provides:
+      Getopt::Long::Descriptive 0.105
+      Getopt::Long::Descriptive::Opts 0.105
+      Getopt::Long::Descriptive::Usage 0.105
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 0
+      File::Basename 0
+      Getopt::Long 2.33
+      List::Util 0
+      Params::Validate 0.97
+      Scalar::Util 0
+      Sub::Exporter 0.972
+      Sub::Exporter::Util 0
+      overload 0
+      strict 0
+      warnings 0
   HTML-Parser-3.72
     pathname: G/GA/GAAS/HTML-Parser-3.72.tar.gz
     provides:
@@ -427,6 +481,7 @@ DISTRIBUTIONS
       IO::Socket::SSL::Utils 2.014
     requirements:
       ExtUtils::MakeMaker 0
+      Mozilla::CA 0
       Net::SSLeay 1.46
       Scalar::Util 0
   JSON-4.02
@@ -437,6 +492,17 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0
+  JSON-MaybeXS-1.004002
+    pathname: E/ET/ETHER/JSON-MaybeXS-1.004002.tar.gz
+    provides:
+      JSON::MaybeXS 1.004002
+    requirements:
+      Carp 0
+      Cpanel::JSON::XS 2.3310
+      ExtUtils::MakeMaker 0
+      JSON::PP 2.27300
+      Scalar::Util 0
+      perl 5.006
   LWP-MediaTypes-6.04
     pathname: O/OA/OALDERS/LWP-MediaTypes-6.04.tar.gz
     provides:
@@ -850,12 +916,59 @@ DISTRIBUTIONS
       Scalar::Util 1.0
       Text::Balanced 0
       perl 5.008
+  Slack-Notify-0.002
+    pathname: R/RO/ROBN/Slack-Notify-0.002.tar.gz
+    provides:
+      Slack::Notify 0.002
+    requirements:
+      ExtUtils::MakeMaker 0
+      Getopt::Long::Descriptive 0
+      HTTP::Tiny 0
+      JSON::MaybeXS 0
+      Moo 0
+      Type::Utils 0
+      Types::Standard 0
+      namespace::autoclean 0
+      perl 5.010
+      strict 0
+      warnings 0
+  Sub-Exporter-0.987
+    pathname: R/RJ/RJBS/Sub-Exporter-0.987.tar.gz
+    provides:
+      Sub::Exporter 0.987
+      Sub::Exporter::Util 0.987
+    requirements:
+      Carp 0
+      Data::OptList 0.100
+      ExtUtils::MakeMaker 6.30
+      Params::Util 0.14
+      Sub::Install 0.92
+      strict 0
+      warnings 0
   Sub-Exporter-Progressive-0.001013
     pathname: F/FR/FREW/Sub-Exporter-Progressive-0.001013.tar.gz
     provides:
       Sub::Exporter::Progressive 0.001013
     requirements:
       ExtUtils::MakeMaker 0
+  Sub-Identify-0.14
+    pathname: R/RG/RGARCIA/Sub-Identify-0.14.tar.gz
+    provides:
+      Sub::Identify 0.14
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0
+  Sub-Install-0.928
+    pathname: R/RJ/RJBS/Sub-Install-0.928.tar.gz
+    provides:
+      Sub::Install 0.928
+    requirements:
+      B 0
+      Carp 0
+      ExtUtils::MakeMaker 6.30
+      Scalar::Util 0
+      strict 0
+      warnings 0
   Sub-Quote-2.004000
     pathname: H/HA/HAARG/Sub-Quote-2.004000.tar.gz
     provides:
@@ -951,6 +1064,51 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  Type-Tiny-1.010002
+    pathname: T/TO/TOBYINK/Type-Tiny-1.010002.tar.gz
+    provides:
+      Devel::TypeTiny::Perl56Compat 1.010002
+      Devel::TypeTiny::Perl58Compat 1.010002
+      Error::TypeTiny 1.010002
+      Error::TypeTiny::Assertion 1.010002
+      Error::TypeTiny::Compilation 1.010002
+      Error::TypeTiny::WrongNumberOfParameters 1.010002
+      Eval::TypeTiny 1.010002
+      Reply::Plugin::TypeTiny 1.010002
+      Test::TypeTiny 1.010002
+      Type::Coercion 1.010002
+      Type::Coercion::FromMoose 1.010002
+      Type::Coercion::Union 1.010002
+      Type::Library 1.010002
+      Type::Params 1.010002
+      Type::Parser 1.010002
+      Type::Registry 1.010002
+      Type::Tiny 1.010002
+      Type::Tiny::Class 1.010002
+      Type::Tiny::ConstrainedObject 1.010002
+      Type::Tiny::Duck 1.010002
+      Type::Tiny::Enum 1.010002
+      Type::Tiny::Intersection 1.010002
+      Type::Tiny::Role 1.010002
+      Type::Tiny::Union 1.010002
+      Type::Utils 1.010002
+      Types::Common::Numeric 1.010002
+      Types::Common::String 1.010002
+      Types::Standard 1.010002
+      Types::Standard::ArrayRef 1.010002
+      Types::Standard::CycleTuple 1.010002
+      Types::Standard::Dict 1.010002
+      Types::Standard::HashRef 1.010002
+      Types::Standard::Map 1.010002
+      Types::Standard::ScalarRef 1.010002
+      Types::Standard::StrMatch 1.010002
+      Types::Standard::Tied 1.010002
+      Types::Standard::Tuple 1.010002
+      Types::TypeTiny 1.010002
+    requirements:
+      Exporter::Tiny 1.000000
+      ExtUtils::MakeMaker 6.17
+      perl 5.006001
   URI-1.76
     pathname: O/OA/OALDERS/URI-1.76.tar.gz
     provides:
@@ -1106,6 +1264,19 @@ DISTRIBUTIONS
       WWW::RobotRules 6
       base 0
       perl 5.008001
+      strict 0
+      warnings 0
+  namespace-autoclean-0.29
+    pathname: E/ET/ETHER/namespace-autoclean-0.29.tar.gz
+    provides:
+      namespace::autoclean 0.29
+    requirements:
+      B::Hooks::EndOfScope 0.12
+      ExtUtils::MakeMaker 0
+      List::Util 0
+      Sub::Identify 0
+      namespace::clean 0.20
+      perl 5.006
       strict 0
       warnings 0
   namespace-clean-0.27

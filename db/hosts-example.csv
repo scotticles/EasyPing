@@ -1,1 +1,1 @@
-id,group,name,host,status,type_check,email,pushover
+id,group,name,host,status,type_check,email,pushover,webhook

@@ -33,8 +33,11 @@ I am open to improvements and feature requests.
 
  * Linux
  * Perl 5.10+
- * (optional) SMTP Server (Does not do user/pass or TLS/SSL at this time)
- * (optional) Pushover
+ * Notification Types:
+    * (optional) SMTP Server
+    * (optional) Pushover
+    * (optional) Slack
+    * (optional) GSuite Chat Room / google chat
 
 ## WIKI Menu
 * [Installation](https://github.com/scotticles/EasyPing/wiki/Installation)
@@ -42,17 +45,15 @@ I am open to improvements and feature requests.
 * [Cron Scheduling Runs](https://github.com/scotticles/EasyPing/wiki/Cron-Scheduling-Runs)
 * [Writing and Running Scripts](https://github.com/scotticles/EasyPing/wiki/Writing-and-Running-Scripts)
 * [Command Line Commands](https://github.com/scotticles/EasyPing/wiki/Command-line-Commands)
+* [Setting up Logrotate](https://github.com/scotticles/EasyPing/wiki/Logrotate)
 
-#### TODO / thoughts:
+#### Ideas:
 * implement GD
     * small button with green or red status (used for a website link)
     * a status page png file that can be embedded
     * documentation on how to use the images
         * apache/nginx
         * scp to webhost
-* logrotate example
-##### Logrotate
-You will want to add in logrotate file to keep the logs from eating up storage.
 
 ##### Status Page and Button
 If set in settings PNG files will be created after a run that can be used on websites.
