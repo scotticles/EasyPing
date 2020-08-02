@@ -1,6 +1,6 @@
 # EasyPing
 
-#### Version 0.3
+#### Version 0.4
 ![alt text](https://github.com/scotticles/EasyPing/raw/master/screenshots/screenshot.png "Run Screenshot")
 ## Description
 
@@ -48,6 +48,7 @@ I am open to improvements and feature requests.
 * [Setting up Logrotate](https://github.com/scotticles/EasyPing/wiki/Logrotate)
 
 #### Ideas:
+* docker container w/ easyping.conf, /scripts/, hosts.csv, logrotatefile and /logs/ as mount paths
 * implement GD
     * small button with green or red status (used for a website link)
     * a status page png file that can be embedded
