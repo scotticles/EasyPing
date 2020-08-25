@@ -15,22 +15,6 @@ sub _getDB
 
 }
 
-sub createTables
-{
-    my $self = shift;
-    my $dbh = $self->_getDB();
-    $dbh->do ("CREATE TABLE hosts (
-        id INTEGER, 
-        group CHAR (10), 
-        name CHAR (10), 
-        ip CHAR (10), 
-        status Char (10),
-        type_check Char (10),
-        email Char (10), 
-        max_workers CHAR(10)
-        )");
-}
-
 sub getHosts 
 {
     my ($self, $group) = @_;
@@ -78,16 +62,16 @@ sub removeHost
 }
 sub addHost()
 {
-    my ($self, $group, $name, $host, $type_check, $email, $pushover) = @_;
+    my ($self, $group, $name, $host, $type_check, $email, $pushover, $webhook) = @_;
     my $dbh = $self->_getDB();
     my $sth = $dbh->prepare("select max(id) from hosts");
     $sth->execute();
     my $max = $sth->fetchrow_hashref->{'MAX'};
     my $id = $max+1;
     $sth = $dbh->prepare ("INSERT INTO hosts (
-    id,group,name,host,status,type_check,email,pushover)
-    VALUES (?, ?, ?, ?, 'up', ?, ?, ?)");
-    $sth->execute ($id,$group, $name, $host, $type_check, $email, $pushover);
+    id,group,name,host,status,type_check,email,pushover,webhook)
+    VALUES (?, ?, ?, ?, 'up', ?, ?, ?, ?)");
+    $sth->execute ($id,$group, $name, $host, $type_check, $email, $pushover, $webhook);
     $sth->finish;
     $dbh->disconnect;
 }

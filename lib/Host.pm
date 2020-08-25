@@ -27,7 +27,7 @@ sub addHostMenu {
     print "What is the Host (ip address of host, url of host, script path)? ";
     my $host = <STDIN>;
     chomp($host);
-    print "What is the Host type (ping,http|https,script)? ";
+    print "What is the Host type (ping,web,script)? ";
     my $type = <STDIN>;
     chomp($type);
     print "What email addresses should be used for contact (enter for none)? ";
@@ -36,9 +36,12 @@ sub addHostMenu {
     print "What pushover addresses should be used for contact (enter for none)? ";
     my $pushover = <STDIN>;
     chomp($pushover);
+    print "What webhook addresses should be used for contact (enter for none)? ";
+    my $webhook = <STDIN>;
+    chomp($webhook);
 
     my $db = lib::Database->new();
-    $db->addHost($group, $name, $host, $type, $email, $pushover);
+    $db->addHost($group, $name, $host, $type, $email, $pushover, $webhook);
 
     print "Host has been added\n";
     
@@ -64,6 +67,7 @@ sub getHostMenu
             $hosts->{$id}->{'host'},
             $hosts->{$id}->{'email'},
             $hosts->{$id}->{'pushover'}
+            $hosts->{$id}->{'webhook'}
             );
        push @data, \@row;
     }
@@ -77,14 +81,15 @@ sub getHostMenu
     'Name',
     'Host',
     'Email',
-    'Pushover'
+    'Pushover',
+    'Webhook'
   ],
   rows        => \@data,
   #broad_column => ["CUT", "CUT", "CUT", "CUT", "CUT", "CUT"],  # defaults to wrap for all values in columns
   #broad_header => ["CUT", "CUT", "CUT", "CUT", "CUT", "CUT"],  # defaults to wrap for all values in headers
   #broad_row    => 'CUT',                    # defaults to row wrap; supports split to other page, too
-  collapse     => [0, 0, 1, 1, 1, 1, 1, 0],           # defaults to no collapse for all columns
-  column_width => [2, 6, 10, 10, 20, 20, 20, 30],     # defaults to maximum text length within header / values
+  collapse     => [0, 0, 1, 1, 1, 1, 1, 0, 0],           # defaults to no collapse for all columns
+  column_width => [2, 6, 10, 10, 20, 20, 20, 30, 30],     # defaults to maximum text length within header / values
   pad          => 2,                      # defaults to 1 for each side
   page_height  => 100,                    # defaults to 0 (no paging)
   table_width  => 180,                    # defaults to screen size
