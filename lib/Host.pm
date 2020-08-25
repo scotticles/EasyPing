@@ -66,7 +66,7 @@ sub getHostMenu
             $hosts->{$id}->{'name'},
             $hosts->{$id}->{'host'},
             $hosts->{$id}->{'email'},
-            $hosts->{$id}->{'pushover'}
+            $hosts->{$id}->{'pushover'},
             $hosts->{$id}->{'webhook'}
             );
        push @data, \@row;
