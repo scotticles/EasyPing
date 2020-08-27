@@ -88,7 +88,7 @@ sub getHostMenu
   #broad_column => ["CUT", "CUT", "CUT", "CUT", "CUT", "CUT"],  # defaults to wrap for all values in columns
   #broad_header => ["CUT", "CUT", "CUT", "CUT", "CUT", "CUT"],  # defaults to wrap for all values in headers
   #broad_row    => 'CUT',                    # defaults to row wrap; supports split to other page, too
-  collapse     => [0, 0, 1, 1, 1, 1, 1, 0, 0],           # defaults to no collapse for all columns
+  collapse     => [0, 0, 1, 1, 1, 1, 1, 1, 0, 0],           # defaults to no collapse for all columns
   column_width => [2, 6, 10, 10, 20, 20, 20, 30, 30],     # defaults to maximum text length within header / values
   pad          => 2,                      # defaults to 1 for each side
   page_height  => 100,                    # defaults to 0 (no paging)
