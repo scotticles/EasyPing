@@ -39,15 +39,16 @@ I am open to improvements and feature requests.
     * (optional) Slack
     * (optional) GSuite Chat Room / google chat
 
-## WIKI Menu
-* [Installation](https://github.com/scotticles/EasyPing/wiki/Installation)
-* [Adding Hosts](https://github.com/scotticles/EasyPing/wiki/Adding-hosts)
-* [Cron Scheduling Runs](https://github.com/scotticles/EasyPing/wiki/Cron-Scheduling-Runs)
-* [Writing and Running Scripts](https://github.com/scotticles/EasyPing/wiki/Writing-and-Running-Scripts)
-* [Command Line Commands](https://github.com/scotticles/EasyPing/wiki/Command-line-Commands)
-* [Setting up Logrotate](https://github.com/scotticles/EasyPing/wiki/Logrotate)
+##Wiki
+Please refer to the [wiki](https://github.com/scotticles/EasyPing/wiki) for how to install and use.
 
-#### Ideas:
+## My Todo:
+* move user data into a /data folder so /data/scripts /data/db /data/easyping.conf so a docker user can mount /data
+* create the docker container image
+* replace the errors on the web and scripts to just use the name and not the url path for alert messages
+* add a discord webhook
+
+#### Some possible feature ideas:
 * docker container w/ easyping.conf, /scripts/, hosts.csv, logrotatefile and /logs/ as mount paths
 * implement GD
     * small button with green or red status (used for a website link)
