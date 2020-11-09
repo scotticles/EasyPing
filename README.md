@@ -39,7 +39,7 @@ I am open to improvements and feature requests.
     * (optional) Slack
     * (optional) GSuite Chat Room / google chat
 
-##Wiki
+## Wiki
 Please refer to the [wiki](https://github.com/scotticles/EasyPing/wiki) for how to install and use.
 
 ## My Todo:
