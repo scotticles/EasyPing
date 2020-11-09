@@ -47,29 +47,3 @@ Please refer to the [wiki](https://github.com/scotticles/EasyPing/wiki) for how 
 * create the docker container image
 * replace the errors on the web and scripts to just use the name and not the url path for alert messages
 * add a discord webhook
-
-#### Some possible feature ideas:
-* docker container w/ easyping.conf, /scripts/, hosts.csv, logrotatefile and /logs/ as mount paths
-* implement GD
-    * small button with green or red status (used for a website link)
-    * a status page png file that can be embedded
-    * documentation on how to use the images
-        * apache/nginx
-        * scp to webhost
-
-##### Status Page and Button
-If set in settings PNG files will be created after a run that can be used on websites.
-
-##### Deployment Options
-Because of browser caching, you'll want to append a timestamp on the page load. You'll want it to be something like this below. Adds a ` ?timestamp=x `, this will gurantee no caching.
- 
-` <img src='myeasypingurl/statusButton.png?timestamp=324324242'> `
-
-###### Apache/Nginx
-You could use apache/nginx to server the output directory and then from the website load the img tags
-* ` <img src='myeasypingurl/statusButton.png'> `
-* ` <img src='myeasypingurl/statusOverview.png'> `
-* ` <img src='myeasypingurl/statusGroupA.png'> `
-
-##### SCP/SFTP
-You could scp the output folder to the webserver and then create a cron task to put them where they need to go on the webserver.
