@@ -11,10 +11,10 @@ has config => (
 
 sub sendMessage {
     my ($self, $webhook, $message) = @_;
-    my $webhook = WebService::Discord::Webhook->new( $webhook );
+    $discord = WebService::Discord::Webhook->new( $webhook );
 
     my $result = eval {
-        $webhook->execute(content => $message);
+        $discord->execute(content => $message);
     };
  
     if ($@) {
