@@ -17,6 +17,7 @@ use lib::Notification::Email;
 use lib::Notification::Pushover;
 use lib::Notification::Slack;
 use lib::Notification::GoogleChat;
+use lib::Notification::Discord;
 use lib::Common;
 use lib::Host;
 
@@ -66,7 +67,7 @@ if(!$menu_cron) {
 }
 
 #Create objects
-my $config = Config::Tiny->read( 'easyping.conf' );
+my $config = Config::Tiny->read( 'data/easyping.conf' );
 my $checker = lib::Checker->new( config => $config  );
 my $db = lib::Database->new( config => $config );
 my $email = lib::Notification::Email->new( config => $config );
@@ -74,6 +75,7 @@ my $common = lib::Common->new( config => $config );
 my $pushover = lib::Notification::Pushover->new(config => $config);
 my $googleChat = lib::Notification::GoogleChat->new(config => $config);
 my $slack = lib::Notification::Slack->new(config => $config);
+my $discord = lib::Notification::Discord->new(config => $config);
 my $host = lib::Host->new();
 
 my ($hosts, $totalHost) = $db->getHosts($group);
@@ -142,7 +144,7 @@ mce_loop {
             if ($result) {
                 if($hosts->{'status'} eq 'down')
                 {
-                    my $message = sprintf(localtime()." - $hosts->{'name'} - $hosts->{'host'} (packet return time: %.2f ms) - RECOVERED\n", $result);
+                    my $message = sprintf(localtime()." - Group: $hosts->{'group'} - Name: $hosts->{'name'} - $hosts->{'host'} (packet return time: %.2f ms) - RECOVERED\n", $result);
                     print $message;
                     $db->updateHost($hosts->{'id'}, 'up');
                     foreach (@emails) {
@@ -168,6 +170,10 @@ mce_loop {
                             {
                                 $slack->sendMessage($webhookData[1].":".$webhookData[2], $message);
                             }
+                            if($webhookData[0] eq 'discord')
+                            {
+                                $discord->sendMessage($webhookData[1].":".$webhookData[2], $message);
+                            }
                             if($webhookData[0] eq 'gchat')
                             {
                                 $googleChat->sendMessage($webhookData[1].":".$webhookData[2], $message);
@@ -177,7 +183,7 @@ mce_loop {
                 }
                 else
                 {
-                    printf (localtime()." - $hosts->{'name'} - $hosts->{'host'} (packet return time: %.2f ms) - SUCCESS\n", $result);
+                    printf (localtime()." - Group: $hosts->{'group'} - Name: $hosts->{'name'} - $hosts->{'host'} (packet return time: %.2f ms) - SUCCESS\n", $result);
                     $db->updateHost($hosts->{'id'}, 'up');
                 }
                 last; #exit loop
@@ -219,6 +225,10 @@ mce_loop {
                                 {
                                     $slack->sendMessage($webhookData[1].":".$webhookData[2], $message);
                                 }
+                                if($webhookData[0] eq 'discord')
+                                {
+                                    $discord->sendMessage($webhookData[1].":".$webhookData[2], $message);
+                                }
                                 if($webhookData[0] eq 'gchat')
                                 {
                                     $googleChat->sendMessage($webhookData[1].":".$webhookData[2], $message);
@@ -240,7 +250,7 @@ mce_loop {
             {
                 if($hosts->{'status'} eq 'down')
                 {
-                    my $message = sprintf (localtime()." - $hosts->{'name'} - $hosts->{'host'} (web response ok) - RECOVERED\n");
+                    my $message = sprintf (localtime()." - Group: $hosts->{'group'} - Name: $hosts->{'name'} - (web response ok) - RECOVERED\n");
                     print $message;
                     $db->updateHost($hosts->{'id'}, 'up');
                     foreach (@emails) {
@@ -266,6 +276,10 @@ mce_loop {
                             {
                                 $slack->sendMessage($webhookData[1].":".$webhookData[2], $message);
                             }
+                            if($webhookData[0] eq 'discord')
+                            {
+                                $discord->sendMessage($webhookData[1].":".$webhookData[2], $message);
+                            }
                             if($webhookData[0] eq 'gchat')
                             {
                                 $googleChat->sendMessage($webhookData[1].":".$webhookData[2], $message);
@@ -275,14 +289,14 @@ mce_loop {
                 }
                 else
                 {
-                    printf (localtime()." - $hosts->{'name'} - $hosts->{'host'} (web response ok) - SUCCESS\n");
+                    printf (localtime()." - Group: $hosts->{'group'} - Name: $hosts->{'name'} - (web response ok) - SUCCESS\n");
                     $db->updateHost($hosts->{'id'}, 'up');
                 }
                 last; #exit loop
             }
             else
             {
-                my $message = localtime()." - $hosts->{'name'} - $hosts->{'host'} (web response ".$response->{'_rc'}.") - FAILED!";
+                my $message = localtime()." - Group: $hosts->{'group'} - Name: $hosts->{'name'} - (web response ".$response->{'_rc'}.") - FAILED!";
                 say $message;
                 if($attempts > 0)
                 {
@@ -317,6 +331,10 @@ mce_loop {
                             {
                                 $slack->sendMessage($webhookData[1].":".$webhookData[2], $message);
                             }
+                            if($webhookData[0] eq 'discord')
+                            {
+                                $discord->sendMessage($webhookData[1].":".$webhookData[2], $message);
+                            }
                             if($webhookData[0] eq 'gchat')
                             {
                                 $googleChat->sendMessage($webhookData[1].":".$webhookData[2], $message);
@@ -347,7 +365,7 @@ mce_loop {
         {
             if($hosts->{'status'} eq 'down')
             {
-                my $message = sprintf (localtime()." - $hosts->{'name'} - $hosts->{'host'} - RECOVERED\n");
+                my $message = sprintf (localtime()." - Group: $hosts->{'group'} - Name: $hosts->{'name'} - RECOVERED\n");
                 if($config->{SCRIPTING}->{'ONSUCCESS_STDOUT'} && $stdout)
                 {
                     $message .= "STDOUT: ".$stdout."\n";
@@ -377,6 +395,10 @@ mce_loop {
                         {
                             $slack->sendMessage($webhookData[1].":".$webhookData[2], $message);
                         }
+                        if($webhookData[0] eq 'discord')
+                        {
+                            $discord->sendMessage($webhookData[1].":".$webhookData[2], $message);
+                        }
                         if($webhookData[0] eq 'gchat')
                         {
                             $googleChat->sendMessage($webhookData[1].":".$webhookData[2], $message);
@@ -386,7 +408,7 @@ mce_loop {
             }
             else
             {
-                printf (localtime()." - $hosts->{'name'} - $hosts->{'host'} - SUCCESS\n");
+                printf (localtime()." - Group: $hosts->{'group'} - Name: $hosts->{'name'} - $hosts->{'host'} - SUCCESS\n");
                 if($config->{SCRIPTING}->{'ONSUCCESS_STDOUT'} && $stdout)
                 {
                     say "STDOUT: ".$stdout;
@@ -397,7 +419,7 @@ mce_loop {
         }
         else
         {
-            my $message = localtime()." - $hosts->{'name'} - $hosts->{'host'} - FAILED!
+            my $message = localtime()." - Group: $hosts->{'group'} - Name: $hosts->{'name'} - $hosts->{'host'} - FAILED!
 Exit Code: ".$exit."
 -------------------
 STDOUT: ".$stdout."
@@ -436,6 +458,10 @@ STDERR: ".$stderr;
                         if($webhookData[0] eq 'slack')
                         {
                             $slack->sendMessage($webhookData[1].":".$webhookData[2], $message);
+                        }
+                        if($webhookData[0] eq 'discord')
+                        {
+                            $discord->sendMessage($webhookData[1].":".$webhookData[2], $message);
                         }
                         if($webhookData[0] eq 'gchat')
                         {

@@ -7,7 +7,7 @@ use namespace::clean;
 sub _getDB
 {
     # See "Creating database handle" below
-    my $dbh = DBI->connect ("dbi:CSV:f_dir=db", undef, undef, {
+    my $dbh = DBI->connect ("dbi:CSV:f_dir=data/db", undef, undef, {
             f_ext      => ".csv/r",
             RaiseError => 1,
         }) or die "Cannot connect: $DBI::errstr";

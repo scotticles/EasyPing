@@ -1,7 +1,7 @@
 /local/
 /.idea/
 /testSMTP.pl
-/db/settings.csv
-/db/hosts.csv
-/easyping.conf
+/data/db/settings.csv
+/data/db/hosts.csv
+/data/easyping.conf
 /testscript.pl

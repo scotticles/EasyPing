@@ -38,12 +38,10 @@ I am open to improvements and feature requests.
     * (optional) Pushover
     * (optional) Slack
     * (optional) GSuite Chat Room / google chat
+    * (optional) Discord
 
 ## Wiki
 Please refer to the [wiki](https://github.com/scotticles/EasyPing/wiki) for how to install and use.
 
 ## My Todo:
-* move user data into a /data folder so /data/scripts /data/db /data/easyping.conf so a docker user can mount /data
 * create the docker container image
-* replace the errors on the web and scripts to just use the name and not the url path for alert messages
-* add a discord webhook

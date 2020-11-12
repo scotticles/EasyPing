@@ -16,4 +16,5 @@ requires 'Capture::Tiny', '';
 requires 'Getopt::Long', '';
 requires 'Term::Table2', '';
 requires 'Slack::Notify', '';
+requires 'WebService::Discord::Webhook', '';
 requires 'JSON', '';
