@@ -11,7 +11,7 @@ has config => (
 
 sub sendMessage {
     my ($self, $webhook, $message) = @_;
-    $discord = WebService::Discord::Webhook->new( $webhook );
+    my $discord = WebService::Discord::Webhook->new( $webhook );
 
     my $result = eval {
         $discord->execute(content => $message);
