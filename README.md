@@ -26,12 +26,14 @@ I am open to improvements and feature requests.
 * Notification on Fail (Retries x times and if it fails, it will then send the email but you'll only receive one)
 * Notification on Recovery
 * Easy to deploy
+* Dockerhub Image so you can launch it with docker or podman
 
 **I will eventually get around to adding a license on to this.**
 
 ## Requirements: 
 
  * Linux
+ * (Optional) Containers (docker or podman)
  * Perl 5.10+
  * Notification Types:
     * (optional) SMTP Server
@@ -42,6 +44,3 @@ I am open to improvements and feature requests.
 
 ## Wiki
 Please refer to the [wiki](https://github.com/scotticles/EasyPing/wiki) for how to install and use.
-
-## My Todo:
-* create the docker container image
