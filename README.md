@@ -28,6 +28,8 @@ I am open to improvements and feature requests.
 * Easy to deploy
 * Dockerhub Image so you can launch it with docker or podman
 
+![alt text](https://github.com/scotticles/EasyPing/raw/master/screenshots/demo.gif "Demo")
+
 ## Requirements: 
 
  * Linux
