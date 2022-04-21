@@ -28,7 +28,11 @@ I am open to improvements and feature requests.
 * Easy to deploy
 * Dockerhub Image so you can launch it with docker or podman
 
+### Demo
 ![alt text](https://github.com/scotticles/EasyPing/raw/master/screenshots/demo.gif "Demo")
+
+### Docker Demo
+![alt text](https://github.com/scotticles/EasyPing/raw/master/screenshots/docker.gif "Docker")
 
 ## Requirements: 
 
