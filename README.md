@@ -28,8 +28,6 @@ I am open to improvements and feature requests.
 * Easy to deploy
 * Dockerhub Image so you can launch it with docker or podman
 
-**I will eventually get around to adding a license on to this.**
-
 ## Requirements: 
 
  * Linux
