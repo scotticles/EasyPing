@@ -1,11 +1,11 @@
 requires 'Time::HiRes', '';
 requires 'Data::Dumper', '';
 requires 'Moo', '';
-requires 'Net::SMTP', '';
+requires 'Email::Sender::Transport::SMTP', '';
+requires 'Email::Stuffer', '';
 requires 'namespace::clean', '';
 requires 'DBD::CSV', '';
 requires 'Net::Ping::External', '';
-requires 'Net::SMTPS', '';
 requires 'MCE::Loop', '';
 requires 'Modern::Perl', '';
 requires 'LWP::UserAgent', '';

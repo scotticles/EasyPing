@@ -1,8 +1,8 @@
 package lib::Notification::Email;
 use Modern::Perl;
 use Moo;
-use Net::SMTP;
-use Net::SMTPS;
+use Email::Sender::Transport::SMTP;
+use Email::Stuffer;
 use Config::Tiny;
 use namespace::clean;
 
@@ -15,45 +15,41 @@ sub sendMessage()
     my ($self, $to, $name, $ip, $status, $message) = @_;
     my $timestamp = localtime();
     my $smtp;
+    my $smtpTransport;
     if($self->config->{SMTP}->{server_type} eq 'plain')
     {
-        $smtp = Net::SMTP->new($self->config->{SMTP}->{server_address}, Debug => 0, Port => $self->config->{SMTP}->{server_port}, Timeout => 60);
+        $smtpTransport = Email::Sender::Transport::SMTP->new(
+            host => $self->config->{SMTP}->{server_address},
+            port => $self->config->{SMTP}->{server_port},
+            helo => $self->config->{SMTP}->{server_domain}
+        );
     }
     elsif($self->config->{SMTP}->{server_type} eq 'tls')
     {
-        $smtp = Net::SMTPS->new($self->config->{SMTP}->{server_address}, 
-        Debug => 0, Port => $self->config->{SMTP}->{server_port}, doSSL=> 'starttls');
-        $smtp->auth($self->config->{SMTP}->{server_username}, $self->config->{SMTP}->{server_password}, "LOGIN");
+        $smtpTransport = Email::Sender::Transport::SMTP->new(
+            host => $self->config->{SMTP}->{server_address},
+            port => $self->config->{SMTP}->{server_port},
+            ssl => 'starttls',
+            helo => $self->config->{SMTP}->{server_domain},
+            username => $self->config->{SMTP}->{server_username},
+            password => $self->config->{SMTP}->{server_password}
+        );
     }
-    $smtp->mail($self->config->{SMTP}->{from_address});
-
-    if ($smtp->to($to)) {
-        $smtp->data();
-        $smtp->datasend("To: $to");
-        $smtp->datasend("\n");
-        $smtp->datasend("From: ".$self->config->{SMTP}->{from_address});
-        $smtp->datasend("\n");
-        if($status eq 'down')
-        {
-            $smtp->datasend("Subject: $name failed!");
-            $smtp->datasend("\n");
-            $smtp->datasend("\n");
-            $smtp->datasend($message);
-        }
-        else
-        {
-            $smtp->datasend("Subject: $name has recovered!");
-            $smtp->datasend("\n");
-            $smtp->datasend("\n");
-            $smtp->datasend($message);
-        }
-        $smtp->datasend("\n");
-        $smtp->dataend();
-    } else {
-        print "Error: ", $smtp->message();
+    my $subject;
+    if($status eq 'down')
+    {
+        $subject = "EasyPing - $name failed!";
     }
-
-    $smtp->quit;
+    else
+    {
+        $subject = "EasyPing - $name has recovered!";
+    }
+    Email::Stuffer->transport($smtpTransport)
+              ->from        ($self->config->{SMTP}->{from_address})
+              ->subject     ($subject)
+              ->to          ($to)
+              ->text_body   ($message)
+              ->send_or_die;
 }
 
 
